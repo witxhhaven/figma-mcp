@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "figma-bridge": {
+      "command": "npx",
+      "args": ["tsx", "server/index.ts"],
+      "cwd": "."
+    }
+  }
+}
