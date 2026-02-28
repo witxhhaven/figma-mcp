@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "postbuild": "chmod +x dist/server/index.js",
     "build:plugin": "node plugin/esbuild.config.cjs",
     "watch:plugin": "node plugin/esbuild.config.cjs --watch",
     "mcp": "npx tsx server/index.ts",
