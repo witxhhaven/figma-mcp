@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Inter, system-ui, -apple-system, sans-serif;
+    font-size: 12px;
+    color: var(--figma-color-text, #333);
+    background: var(--figma-color-bg, #fff);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100vh;
+  }
+  h2 { font-size: 14px; font-weight: 600; }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--figma-color-bg-secondary, #f5f5f5);
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.connected { background: #1bc47d; }
+  .dot.disconnected { background: #f24822; }
+  .dot.connecting { background: #ffb020; animation: pulse 1s infinite; }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+  .log {
+    flex: 1;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 6px;
+    background: var(--figma-color-bg-secondary, #f5f5f5);
+    font-family: monospace;
+    font-size: 11px;
+  }
+  .log.visible { display: flex; }
+  .log-entry {
+    padding: 4px 6px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+  .log-entry.action { background: rgba(0,100,255,0.08); }
+  .log-entry.result { background: rgba(0,180,100,0.08); }
+  .log-entry.error { background: rgba(255,0,0,0.08); color: #d32f2f; }
+  .actions {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--figma-color-border, #ddd);
+    background: var(--figma-color-bg, #fff);
+    color: var(--figma-color-text, #333);
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--figma-color-bg-secondary, #f5f5f5); }
+  .resize-handle {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+  }
+  .resize-handle::after {
+    content: "";
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--figma-color-text-secondary, #999);
+    border-bottom: 2px solid var(--figma-color-text-secondary, #999);
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+  <h2>MCP Bridge</h2>
+
+  <div class="status">
+    <div class="dot connecting" id="dot"></div>
+    <span id="status-text">Connecting...</span>
+  </div>
+
+  <div class="log" id="log"></div>
+
+  <div id="resize-handle" class="resize-handle"></div>
+
+  <div class="actions">
+    <button class="btn" id="toggle-log">Show Logs</button>
+    <button class="btn" id="copy-log">Copy Logs</button>
+  </div>
+
+<script>
+  const WS_URL = "ws://localhost:3002";
+  const RECONNECT_DELAY = 3000;
+
+  let ws = null;
+  const dot = document.getElementById("dot");
+  const statusText = document.getElementById("status-text");
+  const logEl = document.getElementById("log");
+
+  function log(text, type) {
+    const entry = document.createElement("div");
+    entry.className = "log-entry " + (type || "");
+    const time = new Date().toLocaleTimeString();
+    entry.textContent = time + "  " + text;
+    logEl.appendChild(entry);
+    logEl.scrollTop = logEl.scrollHeight;
+    // Keep log manageable
+    while (logEl.children.length > 50) {
+      logEl.removeChild(logEl.firstChild);
+    }
+  }
+
+  function setStatus(state, text) {
+    dot.className = "dot " + state;
+    statusText.textContent = text;
+  }
+
+  // ── WebSocket connection ──
+
+  function connect() {
+    setStatus("connecting", "Connecting to MCP server...");
+
+    try {
+      ws = new WebSocket(WS_URL);
+    } catch (e) {
+      setStatus("disconnected", "Failed to connect");
+      setTimeout(connect, RECONNECT_DELAY);
+      return;
+    }
+
+    ws.onopen = function() {
+      setStatus("connected", "Connected to MCP server");
+      log("Connected to " + WS_URL, "result");
+    };
+
+    ws.onmessage = function(event) {
+      try {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "BRIDGE_REQUEST") {
+          log(msg.action + " (id: " + msg.id.slice(0, 8) + "...)", "action");
+          // Forward to plugin sandbox
+          parent.postMessage({ pluginMessage: msg }, "*");
+        }
+      } catch (e) {
+        log("Bad message from server: " + e.message, "error");
+      }
+    };
+
+    ws.onclose = function() {
+      setStatus("disconnected", "Disconnected — retrying...");
+      log("Disconnected", "error");
+      ws = null;
+      setTimeout(connect, RECONNECT_DELAY);
+    };
+
+    ws.onerror = function() {
+      // onclose will fire after this
+    };
+  }
+
+  // ── Messages from plugin sandbox ──
+
+  window.onmessage = function(event) {
+    const msg = event.data.pluginMessage;
+    if (!msg) return;
+
+    if (msg.type === "BRIDGE_RESPONSE") {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(msg));
+        const status = msg.error ? "error" : "result";
+        const text = msg.error ? "Error: " + msg.error : "OK";
+        log("Response (id: " + msg.id.slice(0, 8) + "...): " + text, status);
+      } else {
+        log("Cannot send response — WebSocket not open", "error");
+      }
+    }
+
+    if (msg.type === "SELECTION_CHANGED") {
+      // Could forward to MCP server if needed
+    }
+  };
+
+  // ── Log toggle & copy ──
+
+  document.getElementById("toggle-log").onclick = function() {
+    const visible = logEl.classList.toggle("visible");
+    this.textContent = visible ? "Hide Logs" : "Show Logs";
+  };
+
+  document.getElementById("copy-log").onclick = function() {
+    const text = Array.from(logEl.children).map(function(el) { return el.textContent; }).join("\n");
+    navigator.clipboard.writeText(text).then(function() {
+      const btn = document.getElementById("copy-log");
+      btn.textContent = "Copied!";
+      setTimeout(function() { btn.textContent = "Copy Logs"; }, 1500);
+    });
+  };
+
+  // ── Resize handle ──
+
+  (function() {
+    var handle = document.getElementById("resize-handle");
+    var startX, startY, startW, startH;
+
+    handle.onmousedown = function(e) {
+      startX = e.clientX;
+      startY = e.clientY;
+      startW = window.innerWidth;
+      startH = window.innerHeight;
+      e.preventDefault();
+
+      document.onmousemove = function(e) {
+        var w = Math.max(200, startW + (e.clientX - startX));
+        var h = Math.max(150, startH + (e.clientY - startY));
+        parent.postMessage({ pluginMessage: { type: "RESIZE", width: w, height: h } }, "*");
+      };
+
+      document.onmouseup = function() {
+        document.onmousemove = null;
+        document.onmouseup = null;
+      };
+    };
+  })();
+
+  // ── Start ──
+  connect();
+</script>
+</body>
+</html>
