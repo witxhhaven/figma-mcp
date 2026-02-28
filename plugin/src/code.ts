@@ -3,7 +3,7 @@ import { executeAICode } from "./executor";
 import { BridgeRequest } from "./types";
 
 // Minimal UI — just shows connection status and relays WebSocket messages
-figma.showUI(__html__, { width: 300, height: 200, themeColors: true });
+figma.showUI(__html__, { width: 300, height: 70, themeColors: true });
 
 // ── Base64 encoder (sandbox lacks btoa) ──
 
