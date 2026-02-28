@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  // plugin/src/scene.ts
+  // figma plugin/src/scene.ts
   function serializeFills(fills, varLookup) {
     return fills.map((fill) => {
       if (fill.type === "SOLID") {
@@ -205,7 +205,7 @@
     return result;
   }
 
-  // plugin/src/executor.ts
+  // figma plugin/src/executor.ts
   async function loadFontFromError(errorMsg) {
     const match = errorMsg.match(
       /unloaded font "(.+?)"\. Please call figma\.loadFontAsync\(\{ family: "(.+?)", style: "(.+?)" \}\)/
@@ -238,7 +238,7 @@ ${code}
     }
   }
 
-  // plugin/src/code.ts
+  // figma plugin/src/code.ts
   figma.showUI(__html__, { width: 300, height: 200, themeColors: true });
   function uint8ArrayToBase64(bytes) {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
