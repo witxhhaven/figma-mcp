@@ -33,7 +33,7 @@ npm link               # make `figma-mcp` available globally
 
 1. Open the Figma desktop app and open any file
 2. Go to **Plugins → Development → Import plugin from manifest...**
-3. Select `figma-mcp/figma plugin/manifest.json`
+3. Select `figma-mcp/plugin/manifest.json`
 4. Run it: **Plugins → Development → Figma MCP Bridge**
 5. A small status window appears with a **red dot** (not connected yet)
 
@@ -121,7 +121,7 @@ npm run mcp             # start MCP server via tsx (no build needed)
 figma-mcp/
 ├── server/
 │   └── index.ts              # MCP server + WebSocket server
-├── figma plugin/
+├── plugin/
 │   ├── manifest.json         # Figma plugin manifest
 │   ├── esbuild.config.cjs    # Plugin build config
 │   └── src/

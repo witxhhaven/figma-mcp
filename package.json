@@ -9,8 +9,8 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "chmod +x dist/server/index.js",
-    "build:plugin": "node 'figma plugin/esbuild.config.cjs'",
-    "watch:plugin": "node 'figma plugin/esbuild.config.cjs' --watch",
+    "build:plugin": "node plugin/esbuild.config.cjs",
+    "watch:plugin": "node plugin/esbuild.config.cjs --watch",
     "mcp": "npx tsx server/index.ts",
     "dev": "concurrently \"npm run watch:plugin\" \"npm run mcp\""
   },
