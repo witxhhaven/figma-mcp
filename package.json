@@ -2,9 +2,14 @@
   "name": "figma-mcp",
   "version": "1.0.0",
   "description": "MCP bridge between Claude Desktop/Code and Figma",
+  "type": "module",
+  "bin": {
+    "figma-mcp": "./dist/server/index.js"
+  },
   "scripts": {
-    "build:plugin": "node plugin/esbuild.config.js",
-    "watch:plugin": "node plugin/esbuild.config.js --watch",
+    "build": "tsc",
+    "build:plugin": "node plugin/esbuild.config.cjs",
+    "watch:plugin": "node plugin/esbuild.config.cjs --watch",
     "mcp": "npx tsx server/index.ts",
     "dev": "concurrently \"npm run watch:plugin\" \"npm run mcp\""
   },

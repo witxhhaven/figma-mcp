@@ -1,86 +1,69 @@
 # Figma MCP Bridge
 
-An MCP (Model Context Protocol) server that lets Claude read and modify Figma files. It pairs a lightweight Figma plugin with a local Node.js server — Claude handles all the intelligence, the plugin is just a bridge.
+Let Claude read and modify your Figma files through an MCP server. A lightweight Figma plugin connects to a local Node.js server — Claude handles the intelligence, the plugin is just a bridge.
 
 ```
 Claude ←(stdio)→ MCP Server ←(WebSocket)→ Figma Plugin ←(Plugin API)→ Figma
 ```
 
-## Prerequisites
+## What You Need
 
 - [Node.js](https://nodejs.org/) v18+
 - [Figma](https://www.figma.com/downloads/) desktop app
 - **Claude Code** (CLI) or **Claude Desktop** app
 
-## Quick Start
+## Setup
 
-### Step 1: Install and build
+### 1. Install and Build
 
 ```bash
 git clone <repo-url> figma-mcp
 cd figma-mcp
 npm install
-npm run build:plugin
+npm run build          # compile the MCP server
+npm run build:plugin   # bundle the Figma plugin
 ```
 
-### Step 2: Load the plugin in Figma
+### 2. Load the Plugin in Figma
 
-1. Open the **Figma desktop app**
-2. Open any Figma file (or create a new one)
-3. Go to the menu: **Plugins → Development → Import plugin from manifest...**
-4. Navigate to `figma-mcp/plugin/manifest.json` and select it
-5. Run the plugin: **Plugins → Development → Figma MCP Bridge**
-6. A small status window appears — it will show a **red dot** (not connected yet)
+1. Open the Figma desktop app and open any file
+2. Go to **Plugins → Development → Import plugin from manifest...**
+3. Select `figma-mcp/plugin/manifest.json`
+4. Run it: **Plugins → Development → Figma MCP Bridge**
+5. A small status window appears with a **red dot** (not connected yet)
 
-> The plugin stays available in your Development menu after importing. You only need to import once.
+> You only need to import once. After that, just re-run the plugin from the Development menu whenever you open Figma.
 
-### Step 3: Connect to Claude
+### 3. Connect to Claude
 
-Choose **one** of the two options below depending on which Claude client you use.
-
----
+Pick **one** of the two options below.
 
 #### Option A: Claude Code (CLI)
 
-The `.mcp.json` in the project root is auto-detected. Just open Claude Code in this directory:
+The project includes a `.mcp.json` that Claude Code auto-detects. Just open Claude Code from this directory:
 
 ```bash
 cd figma-mcp
 claude
 ```
 
-The MCP server starts automatically. The Figma plugin status should turn to a **green dot**.
+The MCP server starts automatically and the plugin's dot turns **green**.
 
-**To use from a different project repo**, add a `.mcp.json` to that project's root:
+#### Option B: Claude Desktop
 
-```json
-{
-  "mcpServers": {
-    "figma-bridge": {
-      "command": "npx",
-      "args": ["tsx", "/absolute/path/to/figma-mcp/server/index.ts"]
-    }
-  }
-}
-```
+1. Open (or create) the config file:
 
----
-
-#### Option B: Claude Desktop App
-
-1. Open this file in a text editor (create it if it doesn't exist):
-
+   **macOS:**
    ```
    ~/Library/Application Support/Claude/claude_desktop_config.json
    ```
 
-   On macOS you can open it with:
-
-   ```bash
-   open -a TextEdit ~/Library/Application\ Support/Claude/claude_desktop_config.json
+   **Windows:**
+   ```
+   %APPDATA%\Claude\claude_desktop_config.json
    ```
 
-2. Add the `mcpServers` section. If the file already has content, merge it:
+2. Add the server config:
 
    ```json
    {
@@ -93,29 +76,20 @@ The MCP server starts automatically. The Figma plugin status should turn to a **
    }
    ```
 
-   **Replace `/absolute/path/to/figma-mcp`** with the actual path on your machine.
+3. **Fully quit** Claude Desktop (Cmd+Q / Alt+F4) and reopen it
+4. You should see an MCP tools icon in the chat input. The plugin dot turns **green**.
 
-3. **Quit and reopen Claude Desktop** (fully quit, not just close the window).
-
-4. In Claude Desktop, you should see a tools icon indicating MCP tools are available. The Figma plugin status should turn to a **green dot**.
-
----
-
-### Step 4: Verify the connection
-
-You should see:
+### 4. Verify It Works
 
 | Where | What to look for |
-|-------|-----------------|
-| **Figma plugin window** | Green dot + "Connected to MCP server" |
-| **Claude Code** | Figma bridge tools available (try asking "check figma connection") |
-| **Claude Desktop** | MCP tools icon visible in the chat input area |
+|---|---|
+| Figma plugin window | Green dot + "Connected to MCP server" |
+| Claude Code | Figma tools available (ask *"check figma connection"*) |
+| Claude Desktop | MCP tools icon in the chat input area |
 
-If the green dot doesn't appear, see [Troubleshooting](#troubleshooting) below.
+### 5. Start Using It
 
-### Step 5: Use it
-
-With the plugin connected, ask Claude to work with your Figma file. Examples:
+Ask Claude anything about your Figma file:
 
 - *"What's on my current Figma page?"*
 - *"Read the selected frame and generate React code for it"*
@@ -123,57 +97,57 @@ With the plugin connected, ask Claude to work with your Figma file. Examples:
 - *"Export the selected frame as a screenshot"*
 - *"Change all the text colors to blue"*
 
-## Available Tools
+## Tools
 
-| Tool | Description |
-|------|-------------|
-| `get_scene` | Returns the full scene context — selected nodes, their properties, variables, text styles, and page info |
-| `get_selection` | Returns a quick summary of selected nodes (IDs, names, types) |
+| Tool | What it does |
+|---|---|
+| `get_scene` | Full scene dump — selected nodes, their properties, variables, text styles, page info |
+| `get_selection` | Quick summary of selected nodes (IDs, names, types) |
 | `execute_code` | Runs Figma Plugin API code in the sandbox (create nodes, modify properties, etc.) |
 | `export_image` | Exports a node as PNG (by node ID or current selection) |
 | `connection_status` | Checks if the Figma plugin is connected |
 
-## Using From Another Project
+## Using From Other Projects
 
-You don't need to work inside the `figma-mcp` directory. There are two ways to make it available elsewhere.
+You don't have to work inside the `figma-mcp` directory. Link the package globally once:
 
-### Option 1: Repo-level (per-project)
+```bash
+cd figma-mcp
+npm run build
+npm link
+```
 
-The MCP is only available when Claude Code runs inside that specific repo.
+Then use `figma-mcp` as a command anywhere.
 
-Add a `.mcp.json` to the **root** of your target project:
+### Per-project (Claude Code)
+
+Add `.mcp.json` to the root of any project:
 
 ```json
 {
   "mcpServers": {
     "figma-bridge": {
-      "command": "npx",
-      "args": ["tsx", "/absolute/path/to/figma-mcp/server/index.ts"]
+      "command": "figma-mcp"
     }
   }
 }
 ```
 
-Replace `/absolute/path/to/figma-mcp` with where you cloned this repo.
+### Global (Claude Code)
 
-### Option 2: User-level (global)
-
-The MCP is available in **every** Claude Code session, regardless of which repo you're in.
-
-**Using the CLI:**
+Available in every Claude Code session:
 
 ```bash
-claude mcp add figma-bridge -s user -- npx tsx /absolute/path/to/figma-mcp/server/index.ts
+claude mcp add figma-bridge -s user -- figma-mcp
 ```
 
-**Or manually** — add to `~/.claude.json`:
+Or add to `~/.claude.json` manually:
 
 ```json
 {
   "mcpServers": {
     "figma-bridge": {
-      "command": "npx",
-      "args": ["tsx", "/absolute/path/to/figma-mcp/server/index.ts"]
+      "command": "figma-mcp"
     }
   }
 }
@@ -181,94 +155,96 @@ claude mcp add figma-bridge -s user -- npx tsx /absolute/path/to/figma-mcp/serve
 
 ### Claude Desktop
 
-The Claude Desktop config is global by nature, so it works from any conversation automatically once configured (see [Option B](#option-b-claude-desktop-app) above).
+After `npm link`, simplify your Claude Desktop config to:
 
----
-
-> **Note:** Whichever method you use, make sure `npm install` has been run in the `figma-mcp` directory and the Figma plugin is running.
+```json
+{
+  "mcpServers": {
+    "figma-bridge": {
+      "command": "figma-mcp"
+    }
+  }
+}
+```
 
 ## Development
 
 ```bash
-npm run build:plugin    # Build the plugin once
-npm run watch:plugin    # Rebuild plugin on file changes
-npm run mcp             # Start MCP server standalone
-npm run dev             # Both at once
+npm run dev             # plugin watcher + MCP server together
+npm run build           # compile server (TypeScript → dist/)
+npm run build:plugin    # bundle plugin once
+npm run watch:plugin    # rebuild plugin on file changes
+npm run mcp             # start MCP server via tsx (no build needed)
 ```
 
-### Project structure
+### Project Structure
 
 ```
 figma-mcp/
 ├── server/
-│   └── index.ts             # MCP server + WebSocket server
+│   └── index.ts              # MCP server + WebSocket server
 ├── plugin/
-│   ├── src/
-│   │   ├── code.ts          # Sandbox: handles bridge commands
-│   │   ├── scene.ts         # Serializes Figma nodes to JSON
-│   │   ├── executor.ts      # Code runner with font auto-retry
-│   │   ├── types.ts         # Shared types + bridge protocol
-│   │   └── ui/
-│   │       └── ui.html      # Minimal UI: WebSocket client + status
-│   ├── dist/                # Built output (git-ignored)
-│   ├── manifest.json        # Figma plugin manifest
-│   └── esbuild.config.js    # Build config
-├── .mcp.json                # Claude Code auto-detection config
+│   ├── manifest.json         # Figma plugin manifest
+│   ├── esbuild.config.cjs    # Plugin build config
+│   └── src/
+│       ├── code.ts           # Sandbox: dispatches bridge commands
+│       ├── scene.ts          # Serializes Figma nodes to JSON
+│       ├── executor.ts       # Code runner with font auto-retry
+│       ├── types.ts          # Shared types + bridge protocol
+│       └── ui/
+│           └── ui.html       # WebSocket client + status UI
+├── dist/                     # Compiled server output
+├── .mcp.json                 # Claude Code auto-detection config
 ├── package.json
 └── tsconfig.json
 ```
 
-## Figma Plugin API Notes
+### How It Works
+
+1. You ask Claude something about Figma (e.g., *"read the selected frame"*)
+2. Claude calls an MCP tool (e.g., `get_scene`)
+3. The MCP server assigns a request ID and sends it over WebSocket
+4. The plugin UI receives the message and forwards it to the Figma sandbox
+5. The sandbox executes the command using the Figma Plugin API
+6. The result flows back: Sandbox → UI → WebSocket → MCP server → Claude
+
+### Figma Plugin API Notes
 
 The plugin uses `documentAccess: "dynamic-page"`, so all Figma API calls in `execute_code` **must be async**:
 
 ```javascript
-// Correct
+// correct
 const node = await figma.getNodeByIdAsync("1:2");
 await figma.loadFontAsync({ family: "Inter", style: "Regular" });
 
-// Wrong — will throw
+// wrong — will throw
 const node = figma.getNodeById("1:2");
 ```
 
-Other rules:
+Other things to know:
 - **Colors** are 0–1 floats, not 0–255 (`{ r: 0.5, g: 0, b: 1 }`)
-- **Load fonts** before any text operation: `await figma.loadFontAsync({ family, style })`
+- **Load fonts** before any text operation
 - **Set `layoutMode`** before setting `layoutSizingHorizontal`/`Vertical`
 - **Always null-check** results from `getNodeByIdAsync()`, `findOne()`, etc.
 
 ## Troubleshooting
 
-### Plugin shows red dot (not connected)
+**Plugin shows red dot (not connected)**
+- Make sure the MCP server is running (in Claude Code it starts automatically; for Claude Desktop, restart the app)
+- Check port 3002 isn't in use: `lsof -i :3002`
+- The plugin auto-reconnects every 3 seconds — wait a moment after starting the server
 
-- Make sure the MCP server is running. In Claude Code, it starts automatically. For Claude Desktop, restart the app.
-- Check that nothing else is using port **3002**: `lsof -i :3002`
-- The plugin auto-reconnects every 3 seconds — wait a moment after starting the server.
+**Claude doesn't show Figma tools**
+- *Claude Code:* make sure you're in a directory with `.mcp.json`, or the `figma-mcp` directory itself
+- *Claude Desktop:* verify `claude_desktop_config.json` has the correct path, then fully restart the app (Cmd+Q)
 
-### Claude doesn't show Figma tools
+**"Font not loaded" errors**
+- `execute_code` auto-retries with font loading up to 3 times
+- If it still fails, load fonts explicitly:
+  ```javascript
+  await figma.loadFontAsync({ family: "Inter", style: "Regular" });
+  textNode.characters = "Hello";
+  ```
 
-- **Claude Code**: Make sure you're in a directory with `.mcp.json`, or the `figma-mcp` directory itself.
-- **Claude Desktop**: Verify `claude_desktop_config.json` has the correct absolute path. Restart the app fully (Cmd+Q, then reopen).
-
-### "Font not loaded" errors
-
-The `execute_code` tool auto-retries with font loading up to 3 times. If it still fails, load fonts explicitly before text operations:
-
-```javascript
-await figma.loadFontAsync({ family: "Inter", style: "Regular" });
-textNode.characters = "Hello";
-```
-
-### Plugin disappears after restarting Figma
-
-Re-run it from **Plugins → Development → Figma MCP Bridge**. The import is persistent, you just need to run it each time you open Figma.
-
-## Data Flow
-
-1. You ask Claude something about Figma (e.g., *"read the selected frame"*)
-2. Claude calls an MCP tool (e.g., `get_scene`)
-3. MCP server receives it via stdio, assigns a request ID, sends it over WebSocket
-4. Plugin UI receives the message, forwards it to the Figma sandbox via `postMessage`
-5. Sandbox executes the command using the Figma Plugin API
-6. Result flows back: Sandbox → UI → WebSocket → MCP server → Claude
-7. Claude processes the result and responds to you
+**Plugin disappears after restarting Figma**
+- Re-run it from **Plugins → Development → Figma MCP Bridge** (the import persists, you just need to launch it each session)
