@@ -52,21 +52,23 @@ npm link               # make `figma-mcp` available globally
 
 ### 3. Connect to Claude Code
 
-Copy the `.mcp.json` from the `mcp-config/` folder into the root of the project you want to work in:
+Copy the `.mcp.json` from the `mcp-config/` folder into the root of the project you want to work in.
+
+**Via terminal:**
 
 ```bash
 cp /path/to/figma-mcp/mcp-config/.mcp.json /path/to/your-project/
 ```
 
-Then open Claude Code from that project directory — it will detect the MCP server and prompt you to confirm:
+**Manually:** `.mcp.json` is a hidden file — run `open .` inside the `mcp-config/` folder of this repo to reveal it in Finder (or press `Cmd + Shift + .` to toggle hidden files), then copy it to your project root.
+
+Once copied, open Claude Code from that project directory — it will detect the MCP server and prompt you to confirm:
 
 ![Claude Code MCP server detected](screenshots/cc-mcp-notify.png)
 
 Select option 1 to enable the server for this project.
 
-> **Note:** `.mcp.json` is a hidden file (dotfiles are invisible by default on macOS). To see it in Finder, press `Cmd + Shift + .` to toggle hidden files. You can also run `open .` in your terminal to open the current directory in Finder.
-
-> **Why per-project?** When `.mcp.json` is in your project root, Claude Code can read your project files (design tokens, variables, component code) alongside Figma data — making it much more useful for code generation and design-to-code workflows.
+> **Why per-project?** When `.mcp.json` is in your project root, Claude Code can read your project files (design tokens, variables, component code) alongside Figma data — making it much more useful for design-to-code workflows.
 
 You can also add it globally so it's available in every Claude Code session:
 
@@ -111,7 +113,7 @@ Ask Claude anything about your Figma file:
 - *"Sync the spacing and typography tokens from our Tailwind config into Figma variables"*
 - *"Generate all the size variants (sm, md, lg) for the selected input component"*
 - *"Create a card component with a title, description, and button"*
-- *"Change all text colors in the selected frame to blue-700 from the Figma variables"*
+- and more
 
 ## Tools
 
