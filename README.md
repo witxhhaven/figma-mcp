@@ -146,5 +146,9 @@ If you copied `.mcp.json` into any project directories, delete those files too.
   textNode.characters = "Hello";
   ```
 
+**Need to kill the server**
+- Find the process: `lsof -i :3002`
+- Kill it: `kill $(lsof -t -i :3002)`
+
 **Plugin disappears after restarting Figma**
 - Re-run it from **Plugins → Development → Claude-Figma Bridge** (the import persists, you just need to launch it each session)
