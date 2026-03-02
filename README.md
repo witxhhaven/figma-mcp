@@ -60,7 +60,7 @@ Then open Claude Code from that project directory — the Figma tools will be av
 You can also add it globally so it's available in every Claude Code session:
 
 ```bash
-claude mcp add figma-bridge -s user -- figma-mcp
+claude mcp add cc-figma-bridge -s user -- figma-mcp
 ```
 
 <!-- #### Claude Desktop (not yet supported)
@@ -70,7 +70,7 @@ Add to your config file (`~/Library/Application Support/Claude/claude_desktop_co
 ```json
 {
   "mcpServers": {
-    "figma-bridge": {
+    "cc-figma-bridge": {
       "command": "figma-mcp"
     }
   }
@@ -116,7 +116,7 @@ npm unlink -g figma-mcp
 If you added the MCP server globally, remove it:
 
 ```bash
-claude mcp remove figma-bridge -s user
+claude mcp remove cc-figma-bridge -s user
 ```
 
 If you copied `.mcp.json` into any project directories, delete those files too.
