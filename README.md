@@ -40,8 +40,13 @@ npm link               # make `figma-mcp` available globally
 1. Open the Figma desktop app and open any file
 2. Go to **Plugins → Development → Import plugin from manifest...**
 3. Select `figma-mcp/plugin/manifest.json`
+
+![Import plugin from manifest](screenshots/figma-plugin.png)
+
 4. Run it: **Plugins → Development → Claude-Figma Bridge**
 5. A small status window appears with a **red dot** (not connected yet)
+
+![Plugin loaded](screenshots/plugin-loaded.png)
 
 > You only need to import once. After that, just re-run the plugin from the Development menu whenever you open Figma.
 
