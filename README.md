@@ -104,16 +104,12 @@ And in Claude Code, run `/mcp` to confirm `cc-figma-bridge` shows as connected:
 
 Ask Claude anything about your Figma file:
 
-**General**
 - *"What's on my current Figma page?"*
-**Design Systems**
 - *"Extract the color tokens from my codebase and create matching Figma variables"*
 - *"Create hover, focus, and disabled states for this button component"*
 - *"Apply the blue color variables defined in Figma to this component"*
 - *"Sync the spacing and typography tokens from our Tailwind config into Figma variables"*
 - *"Generate all the size variants (sm, md, lg) for the selected input component"*
-
-**Design**
 - *"Create a card component with a title, description, and button"*
 - *"Change all text colors in the selected frame to blue-700 from the Figma variables"*
 
