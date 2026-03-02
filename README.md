@@ -17,7 +17,7 @@ Claude ←(stdio)→ MCP Server ←(WebSocket)→ Figma Plugin ←(Plugin API)�
 ### 1. Install, Build, and Link
 
 ```bash
-git clone <repo-url> figma-mcp
+git clone https://github.com/witxhhaven/figma-mcp.git
 cd figma-mcp
 npm install
 npm run build          # compile the MCP server
@@ -100,65 +100,20 @@ Ask Claude anything about your Figma file:
 | `export_image` | Exports a node as PNG (by node ID or current selection) |
 | `connection_status` | Checks if the Figma plugin is connected |
 
-## Development
+
+## Uninstall
 
 ```bash
-npm run dev             # plugin watcher + MCP server together
-npm run build           # compile server (TypeScript → dist/)
-npm run build:plugin    # bundle plugin once
-npm run watch:plugin    # rebuild plugin on file changes
-npm run mcp             # start MCP server via tsx (no build needed)
+npm unlink -g figma-mcp
 ```
 
-### Project Structure
+If you added the MCP server globally, remove it:
 
-```
-figma-mcp/
-├── server/
-│   └── index.ts              # MCP server + WebSocket server
-├── plugin/
-│   ├── manifest.json         # Figma plugin manifest
-│   ├── esbuild.config.cjs    # Plugin build config
-│   └── src/
-│       ├── code.ts           # Sandbox: dispatches bridge commands
-│       ├── scene.ts          # Serializes Figma nodes to JSON
-│       ├── executor.ts       # Code runner with font auto-retry
-│       ├── types.ts          # Shared types + bridge protocol
-│       └── ui/
-│           └── ui.html       # WebSocket client + status UI
-├── mcp-config/               # .mcp.json to copy into other repos
-├── dist/                     # Compiled server output
-├── package.json
-└── tsconfig.json
+```bash
+claude mcp remove figma-bridge -s user
 ```
 
-### How It Works
-
-1. You ask Claude something about Figma (e.g., *"read the selected frame"*)
-2. Claude calls an MCP tool (e.g., `get_scene`)
-3. The MCP server assigns a request ID and sends it over WebSocket
-4. The plugin UI receives the message and forwards it to the Figma sandbox
-5. The sandbox executes the command using the Figma Plugin API
-6. The result flows back: Sandbox → UI → WebSocket → MCP server → Claude
-
-### Figma Plugin API Notes
-
-The plugin uses `documentAccess: "dynamic-page"`, so all Figma API calls in `execute_code` **must be async**:
-
-```javascript
-// correct
-const node = await figma.getNodeByIdAsync("1:2");
-await figma.loadFontAsync({ family: "Inter", style: "Regular" });
-
-// wrong — will throw
-const node = figma.getNodeById("1:2");
-```
-
-Other things to know:
-- **Colors** are 0–1 floats, not 0–255 (`{ r: 0.5, g: 0, b: 1 }`)
-- **Load fonts** before any text operation
-- **Set `layoutMode`** before setting `layoutSizingHorizontal`/`Vertical`
-- **Always null-check** results from `getNodeByIdAsync()`, `findOne()`, etc.
+If you copied `.mcp.json` into any project directories, delete those files too.
 
 ## Troubleshooting
 
