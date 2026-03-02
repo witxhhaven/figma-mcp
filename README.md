@@ -106,14 +106,11 @@ Ask Claude anything about your Figma file:
 
 **General**
 - *"What's on my current Figma page?"*
-- *"Export the selected frame as a screenshot"*
-
 **Design Systems**
 - *"Extract the color tokens from my codebase and create matching Figma variables"*
 - *"Create hover, focus, and disabled states for this button component"*
 - *"Apply the blue color variables defined in Figma to this component"*
 - *"Sync the spacing and typography tokens from our Tailwind config into Figma variables"*
-- *"Create a complete set of semantic color variables (background, surface, text, border) from our existing primitives"*
 - *"Generate all the size variants (sm, md, lg) for the selected input component"*
 
 **Design**
