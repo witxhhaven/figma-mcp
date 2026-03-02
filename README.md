@@ -92,12 +92,13 @@ Add to your config file (`~/Library/Application Support/Claude/claude_desktop_co
 
 ### 4. Verify It Works
 
-| Where | What to look for |
-|---|---|
-| Figma plugin window | Green dot + "Connected" |
-| Claude Code | Figma tools available (ask *"check figma connection"*) |
+If everything is connected, you'll see a **green dot** in the Figma plugin:
 
 ![Figma plugin connected](screenshots/figma-plugin-success.png)
+
+And in Claude Code, run `/mcp` to confirm `cc-figma-bridge` shows as connected:
+
+![MCP server connected in Claude Code](screenshots/mcp-added.png)
 
 ### 5. Start Using It
 
