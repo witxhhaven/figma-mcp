@@ -68,9 +68,9 @@ Once copied, open Claude Code from that project directory — it will detect the
 
 Select option 1 to enable the server for this project.
 
-> **Why per-project?** When `.mcp.json` is in your project root, Claude Code can read your project files (design tokens, variables, component code) alongside Figma data — making it much more useful for design-to-code workflows.
+#### Adding globally
 
-You can also add it globally so it's available in every Claude Code session:
+If you want the Figma tools available in every Claude Code session without copying `.mcp.json` into each project:
 
 ```bash
 claude mcp add cc-figma-bridge -s user -- figma-mcp
