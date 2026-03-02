@@ -1,4 +1,4 @@
-# Figma MCP Bridge
+# Claude-Figma Bridge
 
 Let Claude read and modify your Figma files through an MCP server. A lightweight Figma plugin connects to a local Node.js server — Claude handles the intelligence, the plugin is just a bridge.
 
@@ -40,7 +40,7 @@ npm link               # make `figma-mcp` available globally
 1. Open the Figma desktop app and open any file
 2. Go to **Plugins → Development → Import plugin from manifest...**
 3. Select `figma-mcp/plugin/manifest.json`
-4. Run it: **Plugins → Development → Figma MCP Bridge**
+4. Run it: **Plugins → Development → Claude-Figma Bridge**
 5. A small status window appears with a **red dot** (not connected yet)
 
 > You only need to import once. After that, just re-run the plugin from the Development menu whenever you open Figma.
@@ -140,4 +140,4 @@ If you copied `.mcp.json` into any project directories, delete those files too.
   ```
 
 **Plugin disappears after restarting Figma**
-- Re-run it from **Plugins → Development → Figma MCP Bridge** (the import persists, you just need to launch it each session)
+- Re-run it from **Plugins → Development → Claude-Figma Bridge** (the import persists, you just need to launch it each session)

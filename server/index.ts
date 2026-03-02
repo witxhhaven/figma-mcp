@@ -85,7 +85,7 @@ wss.on("listening", () => {
 function sendToPlugin(action: string, params?: Record<string, any>): Promise<any> {
   return new Promise((resolve, reject) => {
     if (!pluginSocket || pluginSocket.readyState !== WebSocket.OPEN) {
-      reject(new Error("Figma plugin not connected. Open the Figma MCP Bridge plugin in Figma."));
+      reject(new Error("Figma plugin not connected. Open the Claude-Figma Bridge plugin in Figma."));
       return;
     }
 
@@ -207,7 +207,7 @@ server.tool(
           type: "text",
           text: connected
             ? "Figma plugin is connected and ready."
-            : "Figma plugin is NOT connected. Please open the Figma MCP Bridge plugin in Figma.",
+            : "Figma plugin is NOT connected. Please open the Claude-Figma Bridge plugin in Figma.",
         },
       ],
     };
