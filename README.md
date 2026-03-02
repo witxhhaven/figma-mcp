@@ -6,6 +6,12 @@ Let Claude read and modify your Figma files through an MCP server. A lightweight
 Claude ←(stdio)→ MCP Server ←(WebSocket)→ Figma Plugin ←(Plugin API)→ Figma
 ```
 
+## How This Came About
+
+I wanted a way to create and edit Figma designs through natural language. I started with [Figma Copilot](https://github.com/witxhhaven/fig-design-assistant), but it relies on API tokens. I wanted something that uses my existing Claude subscription instead — so I vibe coded this.
+
+It actually works better than the copilot version: you drop the MCP config into your project repo, so Claude has access to both your Figma file and your codebase at the same time. It can also fix errors automatically since it runs in the Claude Code loop.
+
 ## What You Need
 
 - [Node.js](https://nodejs.org/) v18+
