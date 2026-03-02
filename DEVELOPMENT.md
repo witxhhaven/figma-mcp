@@ -25,7 +25,9 @@ figma-mcp/
 │       └── ui/
 │           └── ui.html       # WebSocket client + status UI
 ├── mcp-config/               # .mcp.json to copy into other repos
+├── screenshots/              # Screenshots for docs
 ├── dist/                     # Compiled server output
+├── DEVELOPMENT.md            # Dev docs (this file)
 ├── package.json
 └── tsconfig.json
 ```
