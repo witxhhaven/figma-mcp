@@ -60,6 +60,8 @@ cp /path/to/figma-mcp/mcp-config/.mcp.json /path/to/your-project/
 
 Then open Claude Code from that project directory — the Figma tools will be available automatically.
 
+> **Note:** `.mcp.json` is a hidden file (dotfiles are invisible by default on macOS). To see it in Finder, press `Cmd + Shift + .` to toggle hidden files. You can also run `open .` in your terminal to open the current directory in Finder.
+
 > **Why per-project?** When `.mcp.json` is in your project root, Claude Code can read your project files (design tokens, variables, component code) alongside Figma data — making it much more useful for code generation and design-to-code workflows.
 
 You can also add it globally so it's available in every Claude Code session:
