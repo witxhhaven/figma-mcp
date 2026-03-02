@@ -58,7 +58,11 @@ Copy the `.mcp.json` from the `mcp-config/` folder into the root of the project 
 cp /path/to/figma-mcp/mcp-config/.mcp.json /path/to/your-project/
 ```
 
-Then open Claude Code from that project directory — the Figma tools will be available automatically.
+Then open Claude Code from that project directory — it will detect the MCP server and prompt you to confirm:
+
+![Claude Code MCP server detected](screenshots/cc-mcp-notify.png)
+
+Select option 1 to enable the server for this project.
 
 > **Note:** `.mcp.json` is a hidden file (dotfiles are invisible by default on macOS). To see it in Finder, press `Cmd + Shift + .` to toggle hidden files. You can also run `open .` in your terminal to open the current directory in Finder.
 
@@ -90,8 +94,10 @@ Add to your config file (`~/Library/Application Support/Claude/claude_desktop_co
 
 | Where | What to look for |
 |---|---|
-| Figma plugin window | Green dot + "Connected to MCP server" |
+| Figma plugin window | Green dot + "Connected" |
 | Claude Code | Figma tools available (ask *"check figma connection"*) |
+
+![Figma plugin connected](screenshots/figma-plugin-success.png)
 
 ### 5. Start Using It
 
