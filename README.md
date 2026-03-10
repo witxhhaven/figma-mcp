@@ -1,6 +1,6 @@
 # Claude-Figma Bridge
 
-Create and edit Figma designs through natural language. This MCP server lets Claude Code read and modify your Figma files — a lightweight Figma plugin connects to a local Node.js server, and Claude Code handles the intelligence.
+Create and edit Figma designs through natural language. This MCP server lets Claude Code read and modify your Figma files. A lightweight Figma plugin connects to a local Node.js server, and Claude Code handles the intelligence.
 
 It works with Figma Design. In limited testing, it also works with FigJam and Figma Slides.
 
