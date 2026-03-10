@@ -2,9 +2,7 @@
 
 Let Claude read and modify your Figma files through an MCP server. A lightweight Figma plugin connects to a local Node.js server — Claude handles the intelligence, the plugin is just a bridge.
 
-```
-Claude ←(stdio)→ MCP Server ←(WebSocket)→ Figma Plugin ←(Plugin API)→ Figma
-```
+In limited testing, it works with Figma Design, FigJam, and Figma Slides.
 
 ## How This Came About
 
