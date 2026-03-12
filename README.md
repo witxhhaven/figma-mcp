@@ -18,9 +18,9 @@ It works with Figma Design. In limited testing, it also works with FigJam and Fi
 git clone https://github.com/witxhhaven/figma-mcp.git
 cd figma-mcp
 npm install
-npm run build          # compile the MCP server
-npm run build:plugin   # bundle the Figma plugin
-npm link               # make `figma-mcp` available globally
+npm run build
+npm run build:plugin
+npm link
 ```
 
 `npm link` creates a global `figma-mcp` command so other repos can use the server without knowing the path to this repo. You only need to do this once (and again after a fresh `npm run build` if you pull changes).
