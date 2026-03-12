@@ -14,6 +14,8 @@ It works with Figma Design. In limited testing, it also works with FigJam and Fi
 
 ### 1. Install, Build, and Link
 
+Navigate to the folder where you want to keep the repo, then run:
+
 ```bash
 git clone https://github.com/witxhhaven/figma-mcp.git
 cd figma-mcp
